@@ -80,7 +80,30 @@ button { width: 50px; height: 50px; margin: 5px }
     document.querySelector('#minus').addEventListener('click', onClickOperator('-')); 
     document.querySelector('#divide').addEventListener('click', onClickOperator('/')); 
     document.querySelector('#multiply').addEventListener('click', onClickOperator('*')); 
-    document.querySelector('#calculate').addEventListener('click', () => {}); 
+    document.querySelector('#calculate').addEventListener('click', () => {
+      if (numTwo) {
+        switch (operator) {
+          case '+':
+            $result.value = parseInt(numOne) + parseInt(numTwo); // 문자열 계산 방지
+            break;
+          case '-':
+            $result.value = numOne - numTwo; // 자동 형변환됨
+            break;
+          case '*':
+            $result.value = numOne * numTwo; // 자동 형변환
+            break;
+          case '/':
+            $result.value = numOne / numTwo; // 자동 형변환
+            break
+          default:
+            break;
+        }
+      } else {
+        alert('숫자를 먼저 입력하세요.');
+      }
+
+
+    }); 
     document.querySelector('#clear').addEventListener('click', () => {});
 
 </script>
