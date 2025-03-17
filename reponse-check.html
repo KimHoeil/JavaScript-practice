@@ -31,9 +31,10 @@ const $result = document.querySelector('#result');
 
 let startTime;
 let endTime;
-$screen.addEventListener('click', function (){
-    if ($screen.classList.contains('wating')) { // 대기 화면
-        $screen.classList.replace('wating', 'ready');
+const records = [];
+$screen.addEventListener('click', function () {
+    if ($screen.classList.contains('waiting')) { // 대기 화면
+        $screen.classList.replace('waiting', 'ready');
         $screen.textContent = '초록색이 되면 클릭하세요';
         setTimeout(function () {
             startTime = new Date();
@@ -44,11 +45,18 @@ $screen.addEventListener('click', function (){
         
     } else if ($screen.classList.contains('now')){ // 측정 화면
         endTime = new Date();
-        $result.textContent = `${endTime - startTime}ms`;
-        $screen.classList.replace('now', 'wating');
+        const current = endTime - startTime;
+        records.push(current);
+        const average = records.reduce((a,c) => a+c) / records.length;
+        
+        $result.textContent = `현재 ${current}ms, 평균: ${average}ms`;
+        startTime = null;
+        endTime = null;
+
+        $screen.classList.replace('now', 'waiting');
         $screen.textContent = '클릭해서 테스트를 시작하세요';
     }
-})
+});
 
 
 
