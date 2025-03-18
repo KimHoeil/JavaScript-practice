@@ -51,78 +51,49 @@ const $monsterName = document.querySelector('#monster-name'); // 몬스터 이�
 const $monsterHp = document.querySelector('#monster-hp'); // 몬스터 체력
 const $monsterAtt = document.querySelector('#monster-att'); // 몬스터 공격력
 const $message = document.querySelector('#message');
-const hero = { // 주인공 정보
-  name: '', // 이름은 입력받음
-  lev: 1,
-  maxHp: 100,
-  hp: 100,
-  xp: 0,
-  att: 10,
-  attack(monster){ // 몬스터 공격 메서드
-    monster.hp -= this.att;
-    this.hp -= monster.att;
-  },
-  heal(monster) { // 체력 회복 메서드
+class Game { // 게임 클래스
+  constructor(name) { // 생성자
+    this.monster = null;
+    this.hero = null;
+    this.mosterList = [
+      { name: '슬라임', hp: 25, att: 10, xp: 10 },
+      { name: '스켈레톤', hp: 50, att: 15, xp: 20 },
+      { name: '마왕', hp: 150, att: 35, xp: 50 },
+    ];
+  }
+}
+class Unit{ // 공통 클래스
+  constructor(name, hp, att, xp){ // 생성자
+    this.name = name;
+    this.maxHp = hp;
+    this.hp = hp;
+    this.xp = xp;
+    this.att = att;
+  }
+  attack(target) { // 공격 메서드
+    target.hp -= this.att;
+  }
+}
+
+class Hero extends Unit { // 주인공 클래스
+  constructor(name){ // 생성자
+    super(name, 100,10,0);
+    this.lev = 1;
+  }
+  heal(monster){ // 회복 메서드
     this.hp += 20;
     this.hp -= monster.att;
   }
-};
+}
 
-let monster = null;
-const monsterList = [ // 몬스터 정보
-  {name: '슬라임', hp:25, att:10, xp:10},
-  {name: '스켈레톤', hp:50, att:15, xp:20},
-  {name: '마왕', hp:150, att:35, xp:50},
-];
-
-
-$startScreen.addEventListener('submit', (event)=> {
-    event.preventDefault();
-    const name = event.target['name-input'].value;
-    $startScreen.style.display = 'none'; // 초기화면 숨기기
-    $gameMenu.style.display = 'block'; // 일반 메뉴 화면 보이기
-    $heroName.textContent = name;
-    // 주인공 정보 표시
-    $heroLevel.textContent = ` Lev ${hero.lev}`;
-    $heroHp.textContent = `HP: ${hero.hp}/${hero.maxHp}`;
-    $heroXp.textContent = `XP: ${hero.xp}/${15 * hero.lev}`;
-    $heroAtt.textContent = `ATT: ${hero.att}`;
-    hero.name = name;
-});
-$gameMenu.addEventListener('submit', (event)=> {
-  // 일반 메뉴
+class Monster extends Unit { // 몬스터 클래스
+}
+let game = null;
+$startScreen.addEventListener('submit', (event) => {
   event.preventDefault();
-  const input = event.target['menu-input'].value;
-  if (input === '1') { // 1번 모험 선택시
-    $gameMenu.style.display = 'none'; // 일반 메뉴 화면 숨기기
-    $battleMenu.style.display = 'block'; // 전투 메뉴 화면 보이기
-    monster = JSON.parse(
-      JSON.stringify(monsterList[Math.floor(Math.random()* monsterList.length)])
-    ); // 몬스터 무작위로 가져오기
-
-    // 상대할 몬스터 정보 표시
-    monster.maxHp = monster.hp;
-    $monsterName.textContent = monster.name;
-    $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
-    $monsterAtt.textContent = `ATT: ${monster.att}`;
-  } else if (input === '2'){ // 2번 휴식 선택 시 
-  } else if (input === '3'){ // 3번 휴식 선택 시
-  }
-})
-
-$battleMenu.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const input = event.target['battle-input'].value;
-  if (input === '1') { // 1번 공격 선택 시 
-    hero.attack(monster);
-    $heroHp.textContent = `HP: ${hero.hp}/${hero.maxHp}`;
-    $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
-    $message.textContent = `${hero.att}의 피해를 주고, ${monster.att}의 피해를 받았다.`;
-  } else if (input === '2') { // 2번 회복 선택 시
-  } else if (input === '3') { // 3번 도망 선택 시
-  }
+  const name = event.target['name-input'].value;
+  game = new Game(name); // 게임 객체 생성
 });
-
 
 </script>
 </body>
