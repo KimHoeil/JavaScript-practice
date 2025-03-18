@@ -21,6 +21,17 @@ const {body} = document;
 const $table = document.createElement('table');
 const $result = document.createElement('div'); // 결과창
 const rows = [];
+let turn = 'O';
+const callback = (event) => {
+  if (event.target.textContent !== '') { // 빈칸이 아닌가?
+    console.log('빈칸이 아닙니다.');
+  } else { // 빈칸이면
+    console.log('빈칸입니다.'); 
+    event.target.textContent = turn;
+    turn = turn === 'X' ? 'O' : 'X';
+  }
+};
+
 for (let i = 1; i <= 3; i++) {
   const $tr = document.createElement('tr');
   const cells = [];
@@ -31,6 +42,7 @@ for (let i = 1; i <= 3; i++) {
   }
   rows.push(cells);
   $table.appendChild($tr);
+  $table.addEventListener('click', callback);
 }
 body.appendChild($table);
 body.appendChild($result);
