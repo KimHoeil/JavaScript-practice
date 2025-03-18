@@ -58,7 +58,16 @@ const hero = { // 주인공 정보
   hp: 100,
   xp: 0,
   att: 10,
+  attack(monster){ // 몬스터 공격 메서드
+    monster.hp -= this.att;
+    this.hp -= monster.att;
+  },
+  heal(monster) { // 체력 회복 메서드
+    this.hp += 20;
+    this.hp -= monster.att;
+  }
 };
+
 let monster = null;
 const monsterList = [ // 몬스터 정보
   {name: '슬라임', hp:25, att:10, xp:10},
@@ -100,6 +109,19 @@ $gameMenu.addEventListener('submit', (event)=> {
   } else if (input === '3'){ // 3번 휴식 선택 시
   }
 })
+
+$battleMenu.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const input = event.target['battle-input'].value;
+  if (input === '1') { // 1번 공격 선택 시 
+    hero.attack(monster);
+    $heroHp.textContent = `HP: ${hero.hp}/${hero.maxHp}`;
+    $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
+    $message.textContent = `${hero.att}의 피해를 주고, ${monster.att}의 피해를 받았다.`;
+  } else if (input === '2') { // 2번 회복 선택 시
+  } else if (input === '3') { // 3번 도망 선택 시
+  }
+});
 
 
 </script>
