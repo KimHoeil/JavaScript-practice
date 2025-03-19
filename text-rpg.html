@@ -109,7 +109,12 @@ class Game { // 게임 클래스
       this.changeScreen('battle');
       this.createMonster();
     } else if (input === '2') { // 휴식
+      this.hero.hp = this.hero.maxHp;
+      this.updateHeroStat();
+      this.showMessage('충분한휴식을취했다.');
     } else if (input === '3') { // 종료
+      this.showMessage('게임을 즐겨주셔서 감사합니다!')
+      this.quit();
     }
   }
   createMonster(){ // 몬스터 생성 메서드
@@ -163,7 +168,16 @@ class Game { // 게임 클래스
         this.updateMonsterStat();
       }
     } else if (input === '2') { // 회복
+      const { hero, monster } = this;
+      hero.hp = Math.min(hero.maxHp, hero.hp + 20);
+      monster.attack(hero);
+      this.showMessage('체력을조금회복했다.');
+      this.updateHeroStat();
     } else if (input === '3') { // 도망
+      this.changeScreen('game');
+      this.showMessage('부리나케도망쳤다!');
+      this.monster = null;
+      this.updateMonsterStat();
     }
   }
   quit() { // 게임 오버 메서드
