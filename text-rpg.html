@@ -80,7 +80,7 @@ class Game { // 게임 클래스
       return;
     }
     $heroName.textContent = hero.name;
-    $heroLevel.textContent = `${hero.lev}Lev`;
+    $heroLevel.textContent = ` Lev ${hero.lev}`;
     $heroHp.textContent = `HP: ${hero.hp}/${hero.maxHp}`;
     $heroXp.textContent = `XP: ${hero.xp}/${15 * hero.lev}`;
     $heroAtt.textContent = `ATT: ${hero.att}`;
@@ -144,12 +144,16 @@ class Game { // 게임 클래스
     event.preventDefault();
     const input = event.target['battle-input'].value; 
     if (input === '1') { // 공격
-      this.changeScreen('battle');
+      const {hero, monster} = this;
+      hero.attack(monster);
+      monster.attack(hero);
+      this.showMessage(`${hero.att}의 피해를 주고, ${monster.att}의 피해를 받았다.`);
+      this.updateHeroStat(); 
+      this.updateMonsterStat();
     } else if (input === '2') { // 회복
     } else if (input === '3') { // 도망
     }
   }
-  
 }
 
 class Unit{ // 공통 클래스
