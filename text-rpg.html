@@ -55,7 +55,7 @@ class Game { // 게임 클래스
   constructor(name) { // 생성자
     this.monster = null;
     this.hero = null;
-    this.mosterList = [
+    this.monsterList = [
       { name: '슬라임', hp: 25, att: 10, xp: 10 },
       { name: '스켈레톤', hp: 50, att: 15, xp: 20 },
       { name: '마왕', hp: 150, att: 35, xp: 50 },
@@ -101,32 +101,23 @@ class Game { // 게임 클래스
       $battleMenu.style.display = 'block'; // 전투 메뉴 화면 보이기
     }
   }
+  
   onGameMenuInput = (event) => { // 일반 메뉴 메서드
     event.preventDefault();
     const input = event.target['menu-input'].value;
     if (input === '1') { // 모험
       this.changeScreen('battle');
+      this.createMonster();
     } else if (input === '2') { // 휴식
     } else if (input === '3') { // 종료
     }
   }
-  onBattleMenuInput = (event) => { // 전투 메뉴 메서드
-    event.preventDefault();
-    const input = event.target['battle-input'].value; 
-    if (input === '1') { // 공격
-      this.changeScreen('battle');
-      this.createMonster();
-    } else if (input === '2') { // 회복
-    } else if (input === '3') { // 도망
-    }
-  }
-  
   createMonster(){ // 몬스터 생성 메서드
-    const randomIndex = Math.floor(Math.random()*this.monsterList.length);
+    const randomIndex = Math.floor(Math.random() * this.monsterList.length); 
     const randomMonster = this.monsterList[randomIndex];
     this.monster = new Monster(
-      randomMonster.name,
-      randomMonster.hp,
+      randomMonster.name, 
+      randomMonster.hp, 
       randomMonster.att,
       randomMonster.xp,
     );
@@ -145,7 +136,22 @@ class Game { // 게임 클래스
     $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
     $monsterAtt.textContent = `ATT: ${monster.att}`
   }
+  showMessage(text){
+    $message.textContent = text;
+  }
+
+  onBattleMenuInput = (event) => { // 전투 메뉴 메서드
+    event.preventDefault();
+    const input = event.target['battle-input'].value; 
+    if (input === '1') { // 공격
+      this.changeScreen('battle');
+    } else if (input === '2') { // 회복
+    } else if (input === '3') { // 도망
+    }
+  }
+  
 }
+
 class Unit{ // 공통 클래스
   constructor(name, hp, att, xp){ // 생성자
     this.name = name;
