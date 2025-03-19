@@ -46,6 +46,8 @@ const total = 12; // 전체 카드 수
 const colors = ['red','orange','yellow','green','white','pink']; // 카드 색
 let colorCopy = colors.concat(colors); // 카드 색 복사
 let shuffled = []; // 섞은 카드 배열
+let clicked = []; // 클릭한 카드 배열
+let completed = []; // 완료 카드 배열열
 
 function shuffle(){ // 피셔-예이츠 셔플 알고리즘
     for (; colorCopy.length >0;) {
@@ -69,10 +71,42 @@ function createCard(i){ // 카드 생성 함수
     return card;
 }
 
+function onClickCard(){ // 클릭한 카드 확인 함수
+    this.classList.toggle('flipped');
+    clicked.push(this);
+    if (clicked.length !== 2) {
+        return;
+    }
+    // 클릭한 두 카드 비교
+    const front1Color = clicked[0].querySelector('.card-front').style.backgroundColor;
+    const front2Color = clicked[1].querySelector('.card-front').style.backgroundColor;
+    if (front1Color === front2Color) { // 두 카드의 색이 같으면
+        completed.push(clicked[0]); // 완료 카드 배열에 추가
+        completed.push(clicked[1]); // 완료 카드 배열에 추가
+        clicked = []; // 클릭한 카드 배열 비우기
+        if (completed.length !== total) {
+            return;
+        }
+        setTimeout(() => {
+            alert(`축하합니다!`);
+            resetGame();
+        }, 1000);
+        return;
+    }
+    // 두 카드의 색이 다르면
+    setTimeout(() => {
+        clicked[0].classList.remove('flipped'); // flipped 클래스 제거
+        clicked[1].classList.remove('flipped'); // flipped 클래스 제거
+        clicked = []; // 클릭한 카드 배열 비우기
+    }, 500);
+}
+
+
 function startGame(){ // 게임 시작 함수
     shuffle(); // 카드 섞기
     for (let i = 0; i < total; i++) {
         const card = createCard(i); // 카드 생성
+        card.addEventListener('click',onClickCard); // 이벤트 연결
         $wrapper.appendChild(card);
     }
     document.querySelectorAll('.card').forEach((card,index)=> {
@@ -86,6 +120,15 @@ function startGame(){ // 게임 시작 함수
         })
     }, 5000);
 }
+
+function resetGame(){ // 게임 초기화 및 재실행 함수
+    $wrapper.innerHTML = '';
+    colorCopy = colors.concat(colors);
+    shuffled = [];
+    completed = [];
+    startGame();
+}
+
 startGame();
 
 </script>
