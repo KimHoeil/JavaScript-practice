@@ -85,10 +85,6 @@ class Game { // 게임 클래스
     $heroXp.textContent = `XP: ${hero.xp}/${15 * hero.lev}`;
     $heroAtt.textContent = `ATT: ${hero.att}`;
   }
-}
-
-
-
 
   changeScreen(screen){ // 화면 전환 메서드
     if (screen === 'start') { // 초기화면
@@ -118,9 +114,36 @@ class Game { // 게임 클래스
     event.preventDefault();
     const input = event.target['battle-input'].value; 
     if (input === '1') { // 공격
+      this.changeScreen('battle');
+      this.createMonster();
     } else if (input === '2') { // 회복
     } else if (input === '3') { // 도망
     }
+  }
+  
+  createMonster(){ // 몬스터 생성 메서드
+    const randomIndex = Math.floor(Math.random()*this.monsterList.length);
+    const randomMonster = this.monsterList[randomIndex];
+    this.monster = new Monster(
+      randomMonster.name,
+      randomMonster.hp,
+      randomMonster.att,
+      randomMonster.xp,
+    );
+    this.updateMonsterStat();
+    this.showMessage(`몬스터와 마주쳤다. ${this.monster.name}인 것 같다!`);
+  }
+  updateMonsterStat(){ // 몬스터 정보 표시 메서드
+    const { monster }= this;
+    if (monster === null) {
+      $monsterName.textContent = '';
+      $monsterHp.textContent = '';
+      $monsterAtt.textContent = ''; 
+      return;
+    }
+    $monsterName.textContent = monster.name;
+    $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
+    $monsterAtt.textContent = `ATT: ${monster.att}`
   }
 }
 class Unit{ // 공통 클래스
