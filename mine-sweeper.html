@@ -122,6 +122,10 @@ function onLeftClick(event) { // 좌클릭 동작
         target.className = 'opened'; // 열린 칸으로
         data[rowIndex][cellIndex] = count;
     } else if (cellData === CODE.MINE){ // 지뢰 칸이면
+        target.textContent = '펑';
+        target.className = 'opened';
+        $tbody.removeEventListener('contextmenu', onRightClick);
+        $tbody.removeEventListener('click',onLeftClick);
     } // 나머지는 무시
 }
 
