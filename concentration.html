@@ -42,13 +42,18 @@
 <div id="wrapper"></div>
 <script>
 const $wrapper = document.querySelector('#wrapper');
-const total = 12; // 전체 카드 수
-const colors = ['red','orange','yellow','green','white','pink']; // 카드 색
-let colorCopy = colors.concat(colors); // 카드 색 복사
+const total = parseInt(prompt('카드 수를 짝수로 입력하세요(최대 20).')); // 전체 카드 수
+const colors = [
+    'red','orange','yellow','green','white','pink',
+    'cyan','violet','gray','black',
+]; // 카드 색
+let colorSlice = colors.slice(0, total / 2);
+let colorCopy = colorSlice.concat(colorSlice); // 카드 색 복사
 let shuffled = []; // 섞은 카드 배열
 let clicked = []; // 클릭한 카드 배열
 let completed = []; // 완료 카드 배열
 let clickable = false; // 클릭 가능 여부
+let startTime;
 
 function shuffle(){ // 피셔-예이츠 셔플 알고리즘
     for (; colorCopy.length >0;) {
@@ -92,8 +97,9 @@ function onClickCard(){ // 클릭한 카드 확인 함수
         if (completed.length !== total) {
             return;
         }
+        const endTime = new Date();
         setTimeout(() => {
-            alert(`축하합니다!`);
+            alert(`축하합니다! ${(endTime-startTime) / 1000}초 걸렸습니다.`);
             resetGame();
         }, 1000);
         return;
@@ -126,12 +132,13 @@ function startGame(){ // 게임 시작 함수
             card.classList.remove('flipped');
         })
         clickable = true;
+        startTime = new Date();
     }, 5000);
 }
 
 function resetGame(){ // 게임 초기화 및 재실행 함수
     $wrapper.innerHTML = '';
-    colorCopy = colors.concat(colors);
+    colorCopy = colorSlice.concat(colors);
     shuffled = [];
     completed = [];
     clickable = false;
