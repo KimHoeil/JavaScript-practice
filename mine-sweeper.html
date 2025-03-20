@@ -64,6 +64,39 @@ function plantMine(){ // 무작위로 지뢰 심기
     return data;
 }
 
+function onRightClick(event) { // 우클릭 동작
+    event.preventDefault();
+    const target = event.target;
+    const rowIndex = target.parentNode.rowIndex;
+    const cellIndex = target.cellIndex;
+    const cellData = data[rowIndex][cellIndex];
+    if (cellData === CODE.MINE) { // 지뢰이면
+        data[rowIndex][cellIndex] = CODE.QUESTION_MINE; // 물음표 지뢰로
+        target.className = 'question';
+        target.textContent = '?';
+    } else if (cellData === CODE.QUESTION_MINE) { // 물음표 지뢰이면
+        data[rowIndex][cellIndex] = CODE.FLAG_MINE; // 깃발 지뢰로
+        target.className = 'flag';
+        target.textContent = '!'; // 깃발은 느낌표로 표시
+    } else if (cellData === CODE.FLAG_MINE){ // 깃발 지뢰이면
+        data[rowIndex][cellIndex] = CODE.MINE; // 지뢰로
+        target.className = '';
+        target.textContent = 'X'; // 지뢰는 X로 표시
+    } else if (cellData === CODE.NORMAL) { // 닫힌 칸이면
+        data[rowIndex][cellIndex] = CODE.QUESTION; // 물음표로
+        target.className = 'question';
+        target.textContent = '?';
+    } else if (cellData === CODE.QUESTION) { // 물음표이면
+        data[rowIndex][cellIndex] = CODE.FLAG; // 깃발로
+        target.className = 'flag';
+        target.textContent = '!';
+    } else if (cellData === CODE.FLAG) { // 깃발이면
+        data[rowIndex][cellIndex] = CODE.NORMAL; // 닫힌 칸으로
+        target.className = '';
+        target.textContent = '';
+    }
+}
+
 function drawTable() { // 맵 그리기
     data = plantMine();
     data.forEach((row) => {
@@ -76,8 +109,11 @@ function drawTable() { // 맵 그리기
             $tr.append($td);
         });
         $tbody.append($tr);
+        $tbody.addEventListener('contextmenu', onRightClick); // 우클릭 이벤트 등록록
     })
 }
+
+
 drawTable();
 
 </script>
