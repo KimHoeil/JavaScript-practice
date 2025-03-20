@@ -117,16 +117,45 @@ function onLeftClick(event) { // 좌클릭 동작
     const cellIndex = target.cellIndex;
     const cellData = data[rowIndex][cellIndex];
     if (cellData === CODE.NORMAL) { // 닫힌 칸이면
-        const count = countMine(rowIndex, cellIndex); // 주변 지뢰 개수
-        target.textContent = count || '';
-        target.className = 'opened'; // 열린 칸으로
-        data[rowIndex][cellIndex] = count;
+        openAround(rowIndex,cellIndex);
     } else if (cellData === CODE.MINE){ // 지뢰 칸이면
         target.textContent = '펑';
         target.className = 'opened';
         $tbody.removeEventListener('contextmenu', onRightClick);
         $tbody.removeEventListener('click',onLeftClick);
     } // 나머지는 무시
+}
+
+function open(rowIndex, cellIndex){ // 클릭한 칸 열기
+    if (data[rowIndex]?.[cellIndex] > CODE.OPENED) { // 열었던 칸은 다시 열지 않기
+        return;
+    }
+
+    const target = $tbody.children[rowIndex]?.children[cellIndex];
+    if (!target) { // target 존재 여부 확인
+        return;
+    }
+    const count = countMine(rowIndex, cellIndex);
+    target.textContent = count || '';
+    target.className = 'opened';
+    data[rowIndex][cellIndex] = count;
+    return count;
+}
+
+function openAround(rI, cI){ // 주변 칸 열기
+    setTimeout(() => {
+        const count = open(rI, cI);
+        if (count === 0) {
+            openAround(rI - 1, cI - 1);
+            openAround(rI - 1, cI);
+            openAround(rI - 1, cI + 1);
+            openAround(rI, cI - 1);
+            openAround(rI, cI + 1);
+            openAround(rI + 1, cI - 1);
+            openAround(rI + 1, cI);
+            openAround(rI + 1, cI + 1);
+        }
+    }, 0);
 }
 
 function drawTable() { // 맵 그리기
