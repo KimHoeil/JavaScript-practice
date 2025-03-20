@@ -47,7 +47,8 @@ const colors = ['red','orange','yellow','green','white','pink']; // 카드 색
 let colorCopy = colors.concat(colors); // 카드 색 복사
 let shuffled = []; // 섞은 카드 배열
 let clicked = []; // 클릭한 카드 배열
-let completed = []; // 완료 카드 배열열
+let completed = []; // 완료 카드 배열
+let clickable = false; // 클릭 가능 여부
 
 function shuffle(){ // 피셔-예이츠 셔플 알고리즘
     for (; colorCopy.length >0;) {
@@ -72,6 +73,10 @@ function createCard(i){ // 카드 생성 함수
 }
 
 function onClickCard(){ // 클릭한 카드 확인 함수
+    if (!clickable || completed.includes(this) || clicked[0] === this) {
+        return;
+    }
+
     this.classList.toggle('flipped');
     clicked.push(this);
     if (clicked.length !== 2) {
@@ -94,10 +99,12 @@ function onClickCard(){ // 클릭한 카드 확인 함수
         return;
     }
     // 두 카드의 색이 다르면
+    clickable = false;
     setTimeout(() => {
         clicked[0].classList.remove('flipped'); // flipped 클래스 제거
         clicked[1].classList.remove('flipped'); // flipped 클래스 제거
         clicked = []; // 클릭한 카드 배열 비우기
+        clickable = true;
     }, 500);
 }
 
@@ -118,6 +125,7 @@ function startGame(){ // 게임 시작 함수
         document.querySelectorAll('.card').forEach((card)=>{
             card.classList.remove('flipped');
         })
+        clickable = true;
     }, 5000);
 }
 
@@ -126,6 +134,7 @@ function resetGame(){ // 게임 초기화 및 재실행 함수
     colorCopy = colors.concat(colors);
     shuffled = [];
     completed = [];
+    clickable = false;
     startGame();
 }
 
