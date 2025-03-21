@@ -59,7 +59,12 @@ function onSubmit(event) { // submit 이벤트
   row = parseInt(event.target.row.value);
   cell = parseInt(event.target.cell.value);
   mine = parseInt(event.target.mine.value);
+
   openCount = 0;
+  normalCellFound = false;
+  searched = null;
+  firstClick = true;
+
   clearInterval(interval);
   $tbody.innerHTML = '';
   drawTable(); // 맵 그리기 이동
@@ -70,6 +75,34 @@ function onSubmit(event) { // submit 이벤트
   }, 1000);
 }
 $form.addEventListener('submit', onSubmit); // submit 이벤트 등록
+let normalCellFound = false;
+let searched;
+let firstClick = true;
+function transferMine(rI, cI) {
+    if (normalCellFound) { // 이미 빈칸을 찾았으면 종료
+        return; 
+    }
+    if (rI < 0 || rI >= row || cI < 0 || cI >= cell) {
+        return;
+    }
+    if (searched[rI][cI]) { // 이미 찾은 칸이면 종료
+        return; 
+    }
+    if (data[rI][cI] === CODE.NORMAL) { // 빈칸인 경우
+        normalCellFound = true;
+        data[rI][cI] = CODE.MINE;
+    } else { // 지뢰 칸인 경우 8방향 탐색
+        searched[rI][cI] = true;
+        transferMine(rI - 1, cI - 1);
+        transferMine(rI - 1, cI);
+        transferMine(rI - 1, cI + 1);
+        transferMine(rI, cI - 1);
+        transferMine(rI, cI + 1);
+        transferMine(rI + 1, cI - 1);
+        transferMine(rI + 1, cI);
+        transferMine(rI + 1, cI + 1);
+    }
+}
 
 function plantMine(){ // 무작위로 지뢰 심기
     const candidate = Array(row*cell).fill().map((arr,i) => {
@@ -147,17 +180,38 @@ function onLeftClick(event) { // 좌클릭 동작
     const target = event.target; // td 태그
     const rowIndex = target.parentNode.rowIndex;
     const cellIndex = target.cellIndex;
-    const cellData = data[rowIndex][cellIndex];
-    
+    let cellData = data[rowIndex][cellIndex];
+    if (firstClick) {
+        firstClick = false;
+        searched = Array(row).fill().map(() => []);
+        if (cellData === CODE.MINE) { // 첫 클릭이 지뢰이면
+            transferMine(rowIndex, cellIndex); // 지뢰 옮기기
+            data[rowIndex][cellIndex] = CODE.NORMAL; // 지금 칸을 빈칸으로
+            cellData = CODE.NORMAL;
+        }
+    }
+
     if (cellData === CODE.NORMAL) { // 닫힌 칸이면
         openAround(rowIndex,cellIndex);
     } else if (cellData === CODE.MINE){ // 지뢰 칸이면
+        showMines();
         target.textContent = '펑';
         target.className = 'opened';
         clearInterval(interval);
         $tbody.removeEventListener('contextmenu', onRightClick);
         $tbody.removeEventListener('click',onLeftClick);
     } // 나머지는 무시
+}
+
+function showMines(){
+    const mines = [CODE.MINE, CODE.QUESTION_MINE, CODE.FLAG_MINE];
+    data.forEach((row, rowIndex) => {
+        row.forEach((cell, cellIndex) => {
+        if (mines.includes(cell)) {
+            $tbody.children[rowIndex].children[cellIndex].textContent = 'X';
+        }
+        });
+    });
 }
 
 function open(rowIndex, cellIndex){ // 클릭한 칸 열기
