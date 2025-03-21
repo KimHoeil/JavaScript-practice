@@ -24,11 +24,29 @@
 </head>
 <body>
 <table id="table"></table>
-<div id="score">0</div>
+<div>
+    <span  id="score">0</span>
+    <button  id="back">되돌리기</button>
+</div>
+
 <script>
 const $table = document.getElementById('table');
 const $score = document.getElementById('score');
+const $back = document.getElementById('back');
+
 let data = [];
+const history = [];
+$back.addEventListener('click', () => {
+  const prevData = history.pop();
+  if (!prevData) { // 되돌릴 게 없으면 종료
+    return; 
+  }
+  $score.textContent = prevData.score;
+  data = prevData.table;
+  draw();
+});
+
+
 function startGame() { // 4 × 4 표 그리기
   const $fragment = document.createDocumentFragment();
   [1, 2, 3, 4].forEach(function () {
@@ -82,6 +100,11 @@ data = [ // 더미 데이터
 ];
 draw();
 function moveCells(direction) { // 숫자 이동하고 합치기
+    history.push({
+        table: JSON.parse(JSON.stringify(data)),
+        score: $score.textContent,
+    });
+
     switch (direction) {
     case 'left': { // 왼쪽 정렬, 블록 추가
       const newData = [[], [], [], []]; // 임시 저장용
