@@ -89,6 +89,13 @@ function moveCells(direction) { // 숫자 이동하고 합치기
       data.forEach((rowData, i) => {
         rowData.forEach((cellData, j) => {
           if (cellData) { // 숫자가 0이 아니면
+            const currentRow = newData[i];
+            const prevData = currentRow.at(-1);
+            if (prevData === cellData) { // 이전 숫자와 지금 숫자의 값이 같으면
+                currentRow[currentRow.length - 1] *= -2;
+            } else {
+                newData[i].push(cellData);
+            }
             newData[i].push(cellData);
           }
         });
