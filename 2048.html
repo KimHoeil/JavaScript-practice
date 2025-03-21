@@ -73,7 +73,43 @@ function draw() { // 표에 16개 칸 그리기
   });
 }
 startGame();
-function moveCells(direction) {} // 숫자 이동 함수 선언
+
+data = [ // 더미 데이터
+  [0, 2, 4, 2],
+  [0, 0, 8, 0],
+  [2, 2, 2, 2],
+  [0, 16, 0, 4],
+];
+
+draw();
+function moveCells(direction) { // 숫자 이동하고 합치기
+    switch (direction) {
+    case 'left': { // 왼쪽 정렬, 블록 추가
+      const newData = [[], [], [], []]; // 임시 저장용
+      data.forEach((rowData, i) => {
+        rowData.forEach((cellData, j) => {
+          if (cellData) { // 숫자가 0이 아니면
+            newData[i].push(cellData);
+          }
+        });
+      });
+      console.log(newData);
+      [1, 2, 3, 4].forEach((rowData, i) => {
+        [1, 2, 3, 4].forEach((cellData, j) => {
+            data[i][j] = Math.abs(newData[i][j]) || 0;
+        });
+      });
+      break;
+    }
+    case 'right':
+      break;
+    case 'up':
+      break;
+    case 'down':
+      break;
+  }
+  draw();
+}
 
 window.addEventListener('keyup', (event) => { // 키보드 이벤트 등록
   if (event.key === 'ArrowUp') {
@@ -107,6 +143,9 @@ window.addEventListener('mouseup', (event) => {
     moveCells('up');
   }
 });
+
+
+
 
 
 </script>
