@@ -120,13 +120,28 @@ const $$cells = document.querySelectorAll('.cell');
 
 const holes = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // 
 let started = false; // 시작 버튼 클릭 이벤트 관리 
+let score = 0; // 점수 계산용
+let time = 60; // 제한 시간간
+
 $start.addEventListener('click', () => { // 시작 버튼 클릭 이벤트 등록 
   if (started) { // 이미 시작했으면 무시
     return; 
   }
   started = true;
   console.log('시작');
-  tick();
+  const timerId = setInterval(() => { // 0.1초 타이머 추가
+    time = (time * 10 - 1) / 10; // 소수점 계산 시 문제 있음
+    $timer.textContent = time;
+    if (time === 0) {
+      clearInterval(timerId);
+      clearInterval(tickId);
+      setTimeout(() => {
+        alert(`게임 오버! ${score}점입니다.`);
+      }, 50);
+    }
+  }, 100);
+const tickId = setInterval(tick, 1000);
+// tick(); 삭제
 });
 
 let gopherPercent = 0.3;
@@ -157,6 +172,33 @@ function tick() { // 두더지와 폭탄 보여 주기
 }
 console.log('시작');
 const tickId = setInterval(tick, 1000); // 1초마다 반복
+
+$$cells.forEach(($cell, index) => {
+  $cell.querySelector('.gopher').addEventListener('click', (event) => { // 두더지 클릭 
+    if (!event.target.classList.contains('dead')) { // 점수 계산
+      score += 1;
+      $score.textContent = score;
+    }
+
+    event.target.classList.add('dead');  // 우는 두더지
+    event.target.classList.add('hidden');
+    clearTimeout(holes[index]); // 기존 내려가는 타이머 제거
+    setTimeout(() => { 
+      holes[index] = 0;
+      event.target.classList.remove('dead');
+    }, 1000);
+  });
+  
+  $cell.querySelector('.bomb').addEventListener('click', (event) => { // 폭탄 클릭
+    event.target.classList.add('boom'); // 폭발하는 폭탄
+    event.target.classList.add('hidden');
+    clearTimeout(holes[index]); // 기존 내려가는 타이머 제거
+    setTimeout(() => {
+      holes[index] = 0;
+      event.target.classList.remove('boom');
+    }, 1000);
+  });
+});
 
 
 </script>
