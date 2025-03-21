@@ -47,6 +47,7 @@
 <div>
   <span id="timer">0</span>초&nbsp;
   <span id="score">0</span>점
+  <span id="life">3</span>목숨
   <button id="start">시작</button>
 </div>
 <div id="game">
@@ -117,11 +118,15 @@ const $score = document.querySelector('#score');
 const $game = document.querySelector('#game');
 const $start = document.querySelector('#start');
 const $$cells = document.querySelectorAll('.cell');
+const $life = document.querySelector('#life');
 
 const holes = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // 
 let started = false; // 시작 버튼 클릭 이벤트 관리 
 let score = 0; // 점수 계산용
-let time = 60; // 제한 시간간
+let time = 60; // 제한 시간
+let life = 3;
+let timerId;
+let tickId;
 
 $start.addEventListener('click', () => { // 시작 버튼 클릭 이벤트 등록 
   if (started) { // 이미 시작했으면 무시
@@ -129,7 +134,8 @@ $start.addEventListener('click', () => { // 시작 버튼 클릭 이벤트 등�
   }
   started = true;
   console.log('시작');
-  const timerId = setInterval(() => { // 0.1초 타이머 추가
+
+  timerId = setInterval(() => { // 0.1초 타이머 추가
     time = (time * 10 - 1) / 10; // 소수점 계산 시 문제 있음
     $timer.textContent = time;
     if (time === 0) {
@@ -140,7 +146,7 @@ $start.addEventListener('click', () => { // 시작 버튼 클릭 이벤트 등�
       }, 50);
     }
   }, 100);
-const tickId = setInterval(tick, 1000);
+tickId = setInterval(tick, 1000);
 // tick(); 삭제
 });
 
@@ -171,7 +177,7 @@ function tick() { // 두더지와 폭탄 보여 주기
   });
 }
 console.log('시작');
-const tickId = setInterval(tick, 1000); // 1초마다 반복
+tickId = setInterval(tick, 1000); // 1초마다 반복
 
 $$cells.forEach(($cell, index) => {
   $cell.querySelector('.gopher').addEventListener('click', (event) => { // 두더지 클릭 
@@ -197,6 +203,15 @@ $$cells.forEach(($cell, index) => {
       holes[index] = 0;
       event.target.classList.remove('boom');
     }, 1000);
+    life--;
+    $life.textContent = life;
+    if (life === 0) {
+      clearInterval(timerId);
+      clearInterval(tickId);
+      setTimeout(() => {
+        alert(`게임오버! ${score}점입니다.`);
+      }, 50);
+    }
   });
 });
 
