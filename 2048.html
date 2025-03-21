@@ -73,6 +73,42 @@ function draw() { // 표에 16개 칸 그리기
   });
 }
 startGame();
+function moveCells(direction) {} // 숫자 이동 함수 선언
+
+window.addEventListener('keyup', (event) => { // 키보드 이벤트 등록
+  if (event.key === 'ArrowUp') {
+    moveCells('up');
+  } else if (event.key === 'ArrowDown') { 
+    moveCells('down');
+  } else if (event.key === 'ArrowLeft') {
+    moveCells('left');
+  } else if (event.key === 'ArrowRight') {
+    moveCells('right'); 
+  }
+});
+
+let startCoord; // 기준 좌표(시작점)
+// 마우스 이벤트 등록
+window.addEventListener('mousedown', (event) => { 
+  startCoord = [event.clientX, event.clientY];
+});
+
+window.addEventListener('mouseup', (event) => {
+  const endCoord = [event.clientX, event.clientY];
+  const diffX = endCoord[0] - startCoord[0];
+  const diffY = endCoord[1] - startCoord[1];
+  if (diffX < 0 && Math.abs(diffX) > Math.abs(diffY)) {
+    moveCells('left');
+  } else if (diffX > 0 && Math.abs(diffX) > Math.abs(diffY)) {
+    moveCells('right');
+  } else if (diffY > 0 && Math.abs(diffX) <= Math.abs(diffY)) {
+    moveCells('down');
+  } else if (diffY < 0 && Math.abs(diffX) <= Math.abs(diffY)) {
+    moveCells('up');
+  }
+});
+
+
 </script>
 </body>
 </html>
