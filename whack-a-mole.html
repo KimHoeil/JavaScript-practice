@@ -111,12 +111,41 @@
       </div>
     </div>
   </div>
-  <script>
-  const $timer = document.querySelector('#timer');
-  const $score = document.querySelector('#score');
-  const $game = document.querySelector('#game');
-  const $start = document.querySelector('#start');
-  const $$cells = document.querySelectorAll('.cell');
-  </script>
-  </body>
-  </html>
+<script>
+const $timer = document.querySelector('#timer');
+const $score = document.querySelector('#score');
+const $game = document.querySelector('#game');
+const $start = document.querySelector('#start');
+const $$cells = document.querySelectorAll('.cell');
+
+const holes = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // 
+let started = false; // 시작 버튼 클릭 이벤트 관리 
+$start.addEventListener('click', () => { // 시작 버튼 클릭 이벤트 등록 
+  if (started) { // 이미 시작했으면 무시
+    return; 
+  }
+  started = true;
+  console.log('시작');
+  tick();
+});
+
+function tick() { // 두더지와 폭탄 보여 주기 
+  holes.forEach((hole, index) => {
+    if (hole) { // 무언가 일어나고 있으면 return
+        return;
+    }
+    const $bomb = $$cells[index].querySelector('.bomb');
+    holes[index] = setTimeout(() => { // 1초 뒤에 사라짐
+      $bomb.classList.add('hidden'); // hidden 클래스추가, 두더지 내리기
+      holes[index] = 0; 
+    }, 1000);
+    $bomb.classList.remove('hidden'); // hidden 클래스 제거, 두더지 올리기
+  });
+}
+console.log('시작');
+const tickId = setInterval(tick, 1000); // 1초마다 반복
+
+
+</script>
+</body>
+</html>
