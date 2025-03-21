@@ -75,12 +75,11 @@ function draw() { // 표에 16개 칸 그리기
 startGame();
 
 data = [ // 더미 데이터
-  [0, 2, 4, 2],
-  [0, 0, 8, 0],
-  [2, 2, 2, 2],
-  [0, 16, 0, 4],
+    [32, 2, 4, 2],
+    [64, 4, 8, 4],
+    [2, 1024, 1024, 32],
+    [32, 16, 64, 4],
 ];
-
 draw();
 function moveCells(direction) { // 숫자 이동하고 합치기
     switch (direction) {
@@ -92,6 +91,8 @@ function moveCells(direction) { // 숫자 이동하고 합치기
             const currentRow = newData[i];
             const prevData = currentRow.at(-1);
             if (prevData === cellData) { // 이전 숫자와 지금 숫자의 값이 같으면
+                const score = parseInt($score.textContent);
+                $score.textContent = score + currentRow.at(-1) * 2;
                 currentRow[currentRow.length - 1] *= -2;
             } else {
                 newData[i].push(cellData);
@@ -116,6 +117,8 @@ function moveCells(direction) { // 숫자 이동하고 합치기
                     const currentRow = newData[i]
                     const prevData = currentRow.at(-1);
                     if (prevData === rowData[3 - j]) {
+                        const score = parseInt($score.textContent);
+                        $score.textContent = score + currentRow.at(-1) * 2;
                         currentRow[currentRow.length - 1] *= -2;
                     } else {
                         newData[i].push(rowData[3 - j]);
@@ -139,6 +142,8 @@ function moveCells(direction) { // 숫자 이동하고 합치기
                 const currentRow = newData[j]
                 const prevData = currentRow.at(-1);
                 if (prevData === cellData) {
+                     const score = parseInt($score.textContent);
+                     $score.textContent = score + currentRow.at(-1) * 2;
                     currentRow[currentRow.length - 1] *= -2;
                 } else {
                     newData[j].push(cellData);
@@ -162,6 +167,8 @@ function moveCells(direction) { // 숫자 이동하고 합치기
                     const currentRow = newData[j];
                     const prevData = currentRow.at(-1);
                     if (prevData === data[3 - i][j]) {
+                        const score = parseInt($score.textContent);
+                        $score.textContent = score + currentRow.at(-1) * 2;
                         currentRow[currentRow.length - 1] *= -2;
                     } else {
                         newData[j].push(data[3 - i][j]);
@@ -178,8 +185,18 @@ function moveCells(direction) { // 숫자 이동하고 합치기
         break;
     }
   }
-  put2ToRandomCell(); // 무작위 위치에 새로운 숫자 2넣기
-  draw();
+
+  if (data.flat().includes(2048)) { // 2048을 만들면 승리
+    draw();
+    setTimeout(() => {
+        alert('축하합니다. 2048을 만들었습니다.')
+    }, 0);
+  } else if (!data.flat().includes(0)) { // 빈칸이 없으면 패배
+    alert(`패배했습니다. ㅠ.ㅠ ${$score.textContent}점`);
+  } else {
+    put2ToRandomCell(); // 무작위 위치에 새로운 숫자 2넣기
+    draw();
+  }
 }
 
 window.addEventListener('keyup', (event) => { // 키보드 이벤트 등록
