@@ -129,17 +129,30 @@ $start.addEventListener('click', () => { // 시작 버튼 클릭 이벤트 등�
   tick();
 });
 
+let gopherPercent = 0.3;
+let bombPercent = 0.5;
+
 function tick() { // 두더지와 폭탄 보여 주기 
   holes.forEach((hole, index) => {
     if (hole) { // 무언가 일어나고 있으면 return
         return;
     }
-    const $bomb = $$cells[index].querySelector('.bomb');
-    holes[index] = setTimeout(() => { // 1초 뒤에 사라짐
-      $bomb.classList.add('hidden'); // hidden 클래스추가, 두더지 내리기
-      holes[index] = 0; 
-    }, 1000);
-    $bomb.classList.remove('hidden'); // hidden 클래스 제거, 두더지 올리기
+    const randomValue = Math.random();
+    if (Math.random() < gopherPercent) {
+        const $gopher = $$cells[index].querySelector('.gopher');
+        holes[index] = setTimeout(() => { // 1초 뒤에 사라짐
+            $gopher.classList.add('hidden'); // hidden 클래스추가, 두더지 내리기
+            holes[index] = 0; 
+        }, 1000);
+        $gopher.classList.remove('hidden'); // hidden 클래스 제거, 두더지 올리기
+    } else if(Math.random() < bombPercent) {
+        const $bomb = $$cells[index].querySelector('.bomb');
+        holes[index] = setTimeout(() => { // 1초 뒤에 사라짐
+            $bomb.classList.add('hidden');
+            holes[index] = 0;
+        }, 1000);
+        $bomb.classList.remove('hidden');
+    }
   });
 }
 console.log('시작');
