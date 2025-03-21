@@ -19,18 +19,26 @@ td.question { background: orange; }
 </style>
 </head>
 <body>
+<form id="form"> <!--입력 폼-->
+    <input placeholder="가로 줄" id="row" size="5">
+    <input placeholder="세로 줄" id="cell" size="5">
+    <input placeholder="지뢰" id="mine" size="5">
+    <button>생성</button>
+</form>
+
 <div id="timer">0초</div>
 <table id="table">
     <tbody></tbody>
 </table>
 <div id="result"></div>
 <script>
+const $form = document.querySelector('#form'); // 입력 폼 선택
 const $timer = document.querySelector('#timer'); // #timer 태그 선택
 const $tbody = document.querySelector('#table tbody');
 const $result = document.querySelector('#result');
-const row = 10; // 세로 줄
-const cell = 10; // 가로 줄
-const mine = 10; // 지뢰 개수
+let row; // 세로 줄
+let cell; // 가로 줄
+let mine; // 지뢰 개수
 const CODE = { // 칸 상태 데이터
     NORMAL: -1,
     QUESTION: -2,
@@ -43,11 +51,25 @@ const CODE = { // 칸 상태 데이터
 let data;
 
 let openCount = 0;
-let startTime = new Date(); // 시작 시간
-const interval = setInterval(() => { // 걸린 시간
-    const time = Math.floor((new Date() - startTime) / 1000);
+let startTime; // 시작 시간
+let interval;
+
+function onSubmit(event) { // submit 이벤트 
+  event.preventDefault();
+  row = parseInt(event.target.row.value);
+  cell = parseInt(event.target.cell.value);
+  mine = parseInt(event.target.mine.value);
+  openCount = 0;
+  clearInterval(interval);
+  $tbody.innerHTML = '';
+  drawTable(); // 맵 그리기 이동
+  startTime = new Date(); // 시작 시간 측정
+  interval = setInterval(() => { // 걸린 시간 측정
+        const time = Math.floor((new Date() - startTime) / 1000);
     $timer.textContent = `${time}초`;
-}, 1000);
+  }, 1000);
+}
+$form.addEventListener('submit', onSubmit); // submit 이벤트 등록
 
 function plantMine(){ // 무작위로 지뢰 심기
     const candidate = Array(row*cell).fill().map((arr,i) => {
@@ -91,7 +113,7 @@ function onRightClick(event) { // 우클릭 동작
     } else if (cellData === CODE.FLAG_MINE){ // 깃발 지뢰이면
         data[rowIndex][cellIndex] = CODE.MINE; // 지뢰로
         target.className = '';
-        target.textContent = 'X'; // 지뢰는 X로 표시
+        target.textContent = ''; // X 표시 제거거
     } else if (cellData === CODE.NORMAL) { // 닫힌 칸이면
         data[rowIndex][cellIndex] = CODE.QUESTION; // 물음표로
         target.className = 'question';
@@ -188,7 +210,7 @@ function drawTable() { // 맵 그리기
         row.forEach((cell) => {
             const $td = document.createElement('td');
             if (cell === CODE.MINE) {
-                $td.textContent = 'X'; // 지뢰는 X로 표시
+                $td.textContent = ''; // X 표시 제거
             }
             $tr.append($td);
         });
@@ -198,8 +220,7 @@ function drawTable() { // 맵 그리기
     })
 }
 
-
-drawTable();
+// drawTable(); 삭제
 
 </script>
 </body>
