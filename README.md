@@ -1,5 +1,5 @@
-# JavaScript-프로그래밍 연습(12가지 웹 게임)
-12가지의 웹 게임을 HTML + CSS + JavaScript로 구현했습니다.
+# JavaScript 웹 게임 및 웹 프로그램
+12가지의 웹 게임 및 웹 프로그램을 HTML + CSS + JavaScript로 프로그래밍했습니다.
 
 ## 목차
 1. [끝말잇기](#1-끝말잇기)
